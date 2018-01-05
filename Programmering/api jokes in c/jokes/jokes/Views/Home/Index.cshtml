@@ -1,0 +1,54 @@
+﻿@model jokes.Models.JokeModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.joke)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.rating)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.Ijokelist)
+    {
+        <tr>
+            <td>
+                @item.joke
+            </td>
+            <td>
+                @item.rating
+            </td>
+            <td>
+                @Html.ActionLink("Rate", "Rating", new { id = Model.joke, rating = Model.rating }) 
+            </td>
+        </tr>
+    }
+    @*@for (int i = 0; i < Model.Ijokelist.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Model.Ijokelist[i].joke
+                </td>
+                <td>
+
+                    @Model.Ijokelist[i].rating
+                </td>
+                <td>
+                    @Html.ActionLink("Rate", "Rating", new { id = Model.joke, rating = Model.rating }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }*@
+
+</table>

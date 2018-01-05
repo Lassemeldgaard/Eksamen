@@ -1,0 +1,79 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="dadjoke"></div>
+    <input type="button" value="Ratedad" id="Ratedad"/>
+    <br></br>
+    <div id="chuckjoke"></div>
+    <input type="button" value="Ratechuck" id="Ratechuck"/>
+    
+    <script>
+        $(document).ready(function () {
+            //Perform Ajax request.
+            $.ajax({
+                url: '/dadjoke',
+                type: 'get',
+                success: function (data) {
+                    //If the success function is execute,
+                    //then the Ajax request was successful.
+                    //Add the data we received in our Ajax
+                    //request to the "dadjoke" div.
+                    $('#dadjoke').html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                    $('#dadjoke').html(errorMsg);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            //Perform Ajax request.
+            $.ajax({
+                url: '/chuckjoke',
+                type: 'get',
+                success: function (data) {
+                    //If the success function is execute,
+                    //then the Ajax request was successful.
+                    //Add the data we received in our Ajax
+                    //request to the "chuckjoke" div.
+                    $('#chuckjoke').html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+                    $('#chuckjoke').html(errorMsg);
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $('#Ratedad').click(function () {
+            console.log("hej");            
+            console.log("running AJAJAXJAJ");
+            console.log(document.getElementById("dadjoke").innerHTML);
+            let data = {};
+            data.dadjoke = document.getElementById("dadjoke").innerHTML
+            data.dadrate = 1
+            data.chuckjoke = document.getElementById("chuckjoke").innerHTML
+            data.chuckrate = 0;
+            $.ajax({
+                type: "GET",
+                url: "/RateDad",
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        });
+    </script>
+</body>
+</script>
+</html>
