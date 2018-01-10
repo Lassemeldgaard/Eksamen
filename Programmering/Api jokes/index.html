@@ -55,25 +55,6 @@
             });
         });
     </script>
-    <script type="text/javascript">
-        $('#Ratedad').click(function () {
-            console.log("hej");            
-            console.log("running AJAJAXJAJ");
-            console.log(document.getElementById("dadjoke").innerHTML);
-            let data = {};
-            data.dadjoke = document.getElementById("dadjoke").innerHTML
-            data.dadrate = 1
-            data.chuckjoke = document.getElementById("chuckjoke").innerHTML
-            data.chuckrate = 0;
-            $.ajax({
-                type: "GET",
-                url: "/RateDad",
-                data: data,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            });
-        });
-    </script>
 </body>
 </script>
 </html>
