@@ -40,7 +40,7 @@ let quotes: any[] = [{
 app.get("/", (req, resp) =>{
     let res = new Resource({}, "http://localhost:3000/");
     res.link("AddQuotes: ", "http://localhost:3000/quotes/create")
-    res.link("getSpecificQuote: ", "http://localhost:3000/quotes/list")
+    res.link("GetQuoteList: ", "http://localhost:3000/quotes/list")
     res.link("Highest rated: ", "http://localhost:3000/quotes/highestrated")
     res.link("Newest quotes: ", "http://localhost:3000/quotes/newest")
 
@@ -62,9 +62,11 @@ app.put("/quotes/:id/upvote", (req, resp) => {
     result = "Upvoted";
     resp.status(HTTP.OK).send(result);
 });
-app.delete("/quotes/:id/", (req, resp) => {
+app.delete("/quotes/:id/delete", (req, resp) => {
     let result;
     let id = req.params.id;
+    console.log(id);
+    
     quotes.splice(id, 1);
     result = "Deleted";
 
@@ -79,7 +81,7 @@ app.post("/quotes/create", (req, resp) => {
     let result = "created"
     resp.status(HTTP.CREATED).send(result);
 });
-app.get("/quotes/list", (req, resp) => {
+/*app.get("/quotes/list", (req, resp) => {
     let result = new Resource({}, "http://localhost:3000/quotes/list")
 
     for (let i = 0; i < quotes.length; i++) {
@@ -87,7 +89,22 @@ app.get("/quotes/list", (req, resp) => {
         result.embed("quotes", quotes[i])
     }
     resp.status(HTTP.OK).json(result);
-});
+});*/
+app.get("/quotes/list", (req, resp) => {
+    
+       let res = new Resource({}, "http://localhost:3000/quotes/list");
+    
+       for (let i = 0; i < quotes.length; i++) {
+           let title = quotes[i].title;
+           let description = quotes[i].description;
+           let rating = quotes[i].rating;
+           let quote = new Resource({ title, description, rating }, "/quotes/" + i);
+           res.link(quotes[i].title, "http://localhost:3000/quotes/" + i)
+    
+           res.embed("quote", quote);
+       }
+       resp.status(HTTP.OK).json(res);
+   })
 app.get("/quotes/highestrated", (req, resp) => {
     let result = new Resource({}, "http://localhost:3000/quotes/highestrated")
     quotes.sort((a, b) => b.rating > a.rating ? 1 : -1)
@@ -120,15 +137,12 @@ app.get("/quotes/:id", (req, resp) => {
 
     let id = req.params.id;
     let result = new Resource(quotes[id], "/quotes/" + id) ;
-    result.link("Quote: " + "Delete quote", "http://localhost:3000//quotes/:id/" )
-    result.link("Quote: " + "Upvote quote", "http://localhost:3000//quotes/:id/upvote" )
-    result.link("Quote: " + "Downvote quote", "http://localhost:3000///quotes/:id/downvote" )
-    result.embed("quotes", quotes[id])
+    result.link("Quote: " + "Delete quote", "http://localhost:3000/quotes/" + id + "/delete")
+    result.link("Quote: " + "Upvote quote", "http://localhost:3000/quotes/"+ id + "/upvote" )
+    result.link("Quote: " + "Downvote quote", "http://localhost:3000/quotes/"+ id + "/downvote" )
+    /*result.embed("quotes", quotes[id])*/
     resp.status(HTTP.OK).send(result)
 });
-
-
-
 
 console.log("server listing on port 3000");
 app.listen(3000);

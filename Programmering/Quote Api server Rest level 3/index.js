@@ -36,7 +36,7 @@ var quotes = [{
 app.get("/", function (req, resp) {
     var res = new hal_1.Resource({}, "http://localhost:3000/");
     res.link("AddQuotes: ", "http://localhost:3000/quotes/create");
-    res.link("getSpecificQuote: ", "http://localhost:3000/quotes/list");
+    res.link("GetQuoteList: ", "http://localhost:3000/quotes/list");
     res.link("Highest rated: ", "http://localhost:3000/quotes/highestrated");
     res.link("Newest quotes: ", "http://localhost:3000/quotes/newest");
     resp.status(HTTP.OK).json(res);
@@ -56,9 +56,10 @@ app.put("/quotes/:id/upvote", function (req, resp) {
     result = "Upvoted";
     resp.status(HTTP.OK).send(result);
 });
-app.delete("/quotes/:id/", function (req, resp) {
+app.delete("/quotes/:id/delete", function (req, resp) {
     var result;
     var id = req.params.id;
+    console.log(id);
     quotes.splice(id, 1);
     result = "Deleted";
     resp.status(HTTP.NO_CONTENT).send(result);
@@ -72,13 +73,26 @@ app.post("/quotes/create", function (req, resp) {
     var result = "created";
     resp.status(HTTP.CREATED).send(result);
 });
-app.get("/quotes/list", function (req, resp) {
-    var result = new hal_1.Resource({}, "http://localhost:3000/quotes/list");
-    for (var i = 0; i < quotes.length; i++) {
+/*app.get("/quotes/list", (req, resp) => {
+    let result = new Resource({}, "http://localhost:3000/quotes/list")
+
+    for (let i = 0; i < quotes.length; i++) {
         result.link(quotes[i].title, "http://localhost:3000/quotes/" + i);
-        result.embed("quotes", quotes[i]);
+        result.embed("quotes", quotes[i])
     }
     resp.status(HTTP.OK).json(result);
+});*/
+app.get("/quotes/list", function (req, resp) {
+    var res = new hal_1.Resource({}, "http://localhost:3000/quotes/list");
+    for (var i = 0; i < quotes.length; i++) {
+        var title = quotes[i].title;
+        var description = quotes[i].description;
+        var rating = quotes[i].rating;
+        var quote = new hal_1.Resource({ title: title, description: description, rating: rating }, "/quotes/" + i);
+        res.link(quotes[i].title, "http://localhost:3000/quotes/" + i);
+        res.embed("quote", quote);
+    }
+    resp.status(HTTP.OK).json(res);
 });
 app.get("/quotes/highestrated", function (req, resp) {
     var result = new hal_1.Resource({}, "http://localhost:3000/quotes/highestrated");
@@ -109,10 +123,10 @@ app.get("/quotes/newest", function (req, resp) {
 app.get("/quotes/:id", function (req, resp) {
     var id = req.params.id;
     var result = new hal_1.Resource(quotes[id], "/quotes/" + id);
-    result.link("Quote: " + "Delete quote", "http://localhost:3000//quotes/:id/");
-    result.link("Quote: " + "Upvote quote", "http://localhost:3000//quotes/:id/upvote");
-    result.link("Quote: " + "Downvote quote", "http://localhost:3000///quotes/:id/downvote");
-    result.embed("quotes", quotes[id]);
+    result.link("Quote: " + "Delete quote", "http://localhost:3000/quotes/" + id + "/delete");
+    result.link("Quote: " + "Upvote quote", "http://localhost:3000/quotes/" + id + "/upvote");
+    result.link("Quote: " + "Downvote quote", "http://localhost:3000/quotes/" + id + "/downvote");
+    /*result.embed("quotes", quotes[id])*/
     resp.status(HTTP.OK).send(result);
 });
 console.log("server listing on port 3000");
